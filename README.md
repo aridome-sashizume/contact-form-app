@@ -123,7 +123,7 @@ sail artisan migrate --seed
 - Nginx
 - Tailwind CSS 3.4
 
-##　APIエンドポイント一覧
+## APIエンドポイント一覧
 ※ APIエンドポイント一覧は今後記入予定
 
 ## 開発環境URL
