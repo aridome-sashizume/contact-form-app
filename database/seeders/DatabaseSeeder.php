@@ -14,9 +14,16 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // UserSeederを呼び出す
+        $this->call(UserSeeder::class);
+
+        // CategorySeederを呼び出す
+        $this->call(CategorySeeder::class);
+
+        // TagSeederを呼び出す
+        $this->call(TagSeeder::class);
+
+        // ContactSeederを呼び出す
+        $this->call(ContactSeeder::class);
     }
 }
