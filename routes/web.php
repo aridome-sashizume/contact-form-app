@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\AdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// ルートの定義
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
+});
+
+/*
+*認証が必要なルートをグループ化　
+*AdminControllerのindexメソッドを呼び出すルートを定義
+*/
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index']);
 });

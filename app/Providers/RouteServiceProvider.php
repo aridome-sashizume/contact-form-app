@@ -17,7 +17,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/admin'; //ログイン成功後の/adminへのリダイレクト先を設定するために変更
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
