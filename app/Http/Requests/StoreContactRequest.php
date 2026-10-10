@@ -20,6 +20,10 @@ class StoreContactRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+        //既にtelのtelの値がある場合はreturn　※この処理がないとstore処理の際にtel1、tel2、tel3をinputしていないため、結合処理でNULLを参照しエラー発生
+        if ($this->has('tel')) {
+            return;
+        }
         // tel1, tel2, tel3 を結合して tel フィールドを作る
         $tel = ($this->tel1 ?? '') . ($this->tel2 ?? '') . ($this->tel3 ?? '');
 
@@ -27,6 +31,8 @@ class StoreContactRequest extends FormRequest
         $this->merge([
             'tel' => preg_replace('/[^0-9]/', '', $tel),
         ]);
+
+
     }
 
     /**
@@ -37,7 +43,7 @@ class StoreContactRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // バリデーションルールを定義
+            // お問い合わせフォーム確認・送信のバリデーションルールを定義
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'gender' => 'required|in:1,2,3',
@@ -47,6 +53,10 @@ class StoreContactRequest extends FormRequest
             'building' => 'nullable|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'detail' => 'required|string|max:120',
+
+            // お問い合わせ送信（タグ）のバリデーションルールを追加
+            'tag_ids' => 'nullable|array',
+            'tag_ids.*' => 'integer|exists:tags,id'
         ];
     }
 
