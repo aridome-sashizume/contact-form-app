@@ -41,3 +41,6 @@ Route::middleware(['auth'])->group(function () {
 /********************************** */
 // ルートの定義
 Route::get('/', [ContactController::class, 'index']);    
+
+// お問い合わせフォームの表示ルートを定義
+Route::post('/contacts/confirm', [ContactController::class, 'confirm'])->name('contact.confirm'); // お問い合わせ送信処理のルートを定義

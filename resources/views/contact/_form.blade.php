@@ -99,7 +99,7 @@
                 maxlength="4"
                 class="w-28 px-4 py-3 bg-[#f5f5f5] border-0 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300" />
         </div>
-        <input type="hidden" name="tel" id="tel" value="{{ old('tel') }}">
+        {{-- <input type="hidden" name="tel" id="tel"> --}}
         @error('tel')
             <div class="mt-1 text-sm text-red-600">{{ $message }}</div>
         @enderror
