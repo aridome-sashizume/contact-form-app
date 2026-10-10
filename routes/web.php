@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminController; // AdminControllerをインポート
+
+use App\Http\Controllers\ContactController; // ContactControllerをインポート
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,6 +16,10 @@ use App\Http\Controllers\AdminController;
 |
 */
 
+
+/********************************** */
+/* Fortifyの認証ルートを有効化するためのコード
+/********************************** */
 // ルートの定義
 Route::get('/', function () {
     return redirect()->route('login');
@@ -26,3 +32,12 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
 });
+
+
+
+
+/********************************** */
+/*　ContactControllerのルート定義
+/********************************** */
+// ルートの定義
+Route::get('/', [ContactController::class, 'index']);    
