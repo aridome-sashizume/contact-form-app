@@ -29,7 +29,7 @@ Route::get('/', function () {
 
 /*
 *認証が必要なルートをグループ化　
-*AdminControllerのindexメソッドを呼び出すルートを定義
+*AdminController、ContactController、TagControllerのメソッドを呼び出すルートを定義
 */
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contacts/export',[ContactController::class, 'export']);
     Route::post('/admin/tags', [TagController::class, 'store']);
     Route::get('/admin/tags/{tag}/edit',[TagController::class, 'edit']);
+    Route::put('/admin/tags/{tag}', [TagController::class,'update']);
 });
 
 

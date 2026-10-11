@@ -22,7 +22,7 @@ class StoreTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            // 必須 / string / max:50 / unique
             'name' => 'required|string|max:50|unique:tags,name'
         ];
     }

@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreTagRequest; //タグモデルのバリデーションルールのリクエストを追加
-
+use App\Http\Requests\StoreTagRequest; //タグモデルのバリデーションルールのリクエストを追加（Store用）
+use App\Http\Requests\UpdateTagRequest; //タグモデルのバリデーションルールのリクエストを追加（Update用）
 
 use App\Models\Tag; //Tagモデルを追加
 
 class TagController extends Controller
 {
 
-    //タグを追加するメソッドを追加
+    //タグを追加するメソッドを作成
     public function store(StoreTagRequest $request)
     {
         Tag::create($request->all());
@@ -24,5 +24,12 @@ class TagController extends Controller
     public function edit(Tag $tag)
     {
         return view('admin.tags.edit', compact('tag'));
+    }
+
+    //タグを更新するメソッドを作成
+    public function update(UpdateTagRequest $request, Tag $tag)
+    {
+        $tag->update($request->all());
+        return redirect('/admin')->with('success','タグを更新しました');
     }
 }
