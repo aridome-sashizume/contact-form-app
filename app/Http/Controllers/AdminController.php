@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\IndexContactRequest; //検索条件のバリデーション設定したリクエストを設定
-use Illuminate\Http\Request;
 
+use Illuminate\Http\Request;
 use App\Models\Category; // Categoryモデルを使用するために追加
 use App\Models\Contact; // Contactモデルを使用するために追加
+use App\Models\Tag; //Tagモデルを使用するために追加
 
-
+use App\Http\Requests\IndexContactRequest; //検索条件のバリデーション設定したリクエストを追加
 
 class AdminController extends Controller
 {
@@ -48,15 +48,24 @@ class AdminController extends Controller
         // ページネーション1ページあたり7件取得 + 検索条件保持
         $contacts = $query->paginate(7)->appends($request->query());
 
+        //タグの取得
+        
+
         // admin.indexビューにcontactsとcategoriesを渡す
         return view('admin.index', [
             'contacts' => $contacts,
             'categories' => Category::all(),
+            'tags' => Tag::all(),
         ]);
     }
 
-    //showメソッドを追加
+    //お問い合わせ証左を表示するメソッドを追加
     public function show(Contact $contact)   {
         return view('admin.show',compact('contact'));
     }
+
+
+    
+
+    
 }
