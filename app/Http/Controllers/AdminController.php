@@ -59,12 +59,17 @@ class AdminController extends Controller
         ]);
     }
 
-    //お問い合わせ証左を表示するメソッドを追加
+    //お問い合わせ詳細を表示するメソッドを追加
     public function show(Contact $contact)   {
         return view('admin.show',compact('contact'));
     }
 
-
+    //お問い合わせを削除
+    public function destroy(Contact $contact)
+    {
+        $contact->delete();
+        return redirect('/admin')->with('success','お問い合わせを削除しました');
+    }
     
 
     
