@@ -51,7 +51,7 @@ class AdminController extends Controller
         //タグの取得
         
 
-        // admin.indexビューにcontactsとcategoriesを渡す
+        // admin.indexビューにcontactsとcategories、tagsを渡す
         return view('admin.index', [
             'contacts' => $contacts,
             'categories' => Category::all(),
