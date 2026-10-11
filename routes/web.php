@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController; // AdminControllerをインポート
 
 use App\Http\Controllers\ContactController; // ContactControllerをインポート
+use App\Http\Controllers\TagController; //TagControllerをインポート
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -31,6 +33,10 @@ Route::get('/', function () {
 */
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
+    Route::get(' /admin/contacts/{contact}', [AdminController::class,'show']);
+    Route::get('/contacts/export',[ContactController::class, 'export']);
+    Route::post('/admin/tags', [TagController::class, 'store']);
+    Route::get('/admin/tags/{tag}/edit',[TagController::class, 'edit']);
 });
 
 
