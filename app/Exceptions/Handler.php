@@ -27,18 +27,32 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $e)
     {
-        // レスポンスエラー（IDが存在しない場合）
+        // ① ModelNotFoundException → API用404
         if ($e instanceof ModelNotFoundException) {
-            return response()->json([
-                'error' => 'お問い合わせが見つかりませんでした。'
-            ], 404);
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'error' => 'お問い合わせが見つかりませんでした。',
+                ], 404);
+            }
+
+            // Webの場合は404ページへ
+            return response()->view('errors.404', [], 404);
         }
 
-        // レスポンスエラー（バリデーションエラー）
+        // ② ValidationException → APIとWebで分岐
         if ($e instanceof ValidationException) {
-            return response()->json([
-                'errors'  => $e->errors(), //リクエストで設定したエラーメッセージを出力
-            ], 422);
+
+            // APIリクエストの場合のみ JSON を返す
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'errors' => $e->errors(),
+                ], 422);
+            }
+
+            // Webリクエストの場合は Blade に戻す
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
         }
 
         return parent::render($request, $e);
