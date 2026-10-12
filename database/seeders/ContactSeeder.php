@@ -2,14 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
+use App\Models\Contact;
+use App\Models\Tag; // Contactモデルを使用するために追加
+// Categoryモデルを使用するために追加
+use Illuminate\Database\Seeder; // Tagモデルを使用するために追加
 
-use App\Models\Contact; //Contactモデルを使用するために追加
-use App\Models\Category; //Categoryモデルを使用するために追加   
-use App\Models\Tag; //Tagモデルを使用するために追加
-
-use Faker\Factory as Faker; //Fakerを使用するために追加
+// Fakerを使用するために追加
 
 class ContactSeeder extends Seeder
 {
@@ -25,6 +23,5 @@ class ContactSeeder extends Seeder
             $contact->tags()->attach($tags);
         });
 
-        
     }
 }

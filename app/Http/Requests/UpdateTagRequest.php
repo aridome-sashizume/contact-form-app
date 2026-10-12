@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-
 use Illuminate\Validation\Rule;
 
 class UpdateTagRequest extends FormRequest
@@ -19,17 +19,17 @@ class UpdateTagRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
-        //name必須/<=50/ユニーク（自身の現在名は許可）
+        // name必須/<=50/ユニーク（自身の現在名は許可）
         return [
             'name' => [
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('tags', 'name')->ignore($this->tag->id), //ユニークのルールにタグIDが同一であった場合は対象除外することをルールとして記述
+                Rule::unique('tags', 'name')->ignore($this->tag->id), // ユニークのルールにタグIDが同一であった場合は対象除外することをルールとして記述
             ],
         ];
     }
@@ -37,9 +37,9 @@ class UpdateTagRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'=> 'タグ名を入力してください',
-            'name.max'=> 'タグ名は50文字以内で入力してください',
-            'name.unique'=> 'そのタグ名は既に使用されています'
+            'name.required' => 'タグ名を入力してください',
+            'name.max' => 'タグ名は50文字以内で入力してください',
+            'name.unique' => 'そのタグ名は既に使用されています',
         ];
     }
 }

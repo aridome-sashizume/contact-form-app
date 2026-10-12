@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class IndexContactRequest extends FormRequest
@@ -17,26 +18,26 @@ class IndexContactRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             //
-            'keyword'=>'nullable|string|max:255',
-            'gendar'=> 'nullable|integer| in:1,2,3',
-            'category_id'=> 'nullable|integer|exists:categories,id',
-            'date'=>'nullable|date',
-            'per_page'=> 'nullable|integer|min:1|max:100',
-            'page'=> 'nullable|integer|min:1',            
+            'keyword' => 'nullable|string|max:255',
+            'gendar' => 'nullable|integer| in:1,2,3',
+            'category_id' => 'nullable|integer|exists:categories,id',
+            'date' => 'nullable|date',
+            'per_page' => 'nullable|integer|min:1|max:100',
+            'page' => 'nullable|integer|min:1',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'gender.in'=> '性別の値が不正です',
-            'category_id.exists'=> '選択されたカテゴリーが存在しません',
+            'gender.in' => '性別の値が不正です',
+            'category_id.exists' => '選択されたカテゴリーが存在しません',
         ];
     }
 }

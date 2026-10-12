@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreContactRequest extends FormRequest
@@ -20,25 +21,24 @@ class StoreContactRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        //既にtelのtelの値がある場合はreturn　※この処理がないとstore処理の際にtel1、tel2、tel3をinputしていないため、結合処理でNULLを参照しエラー発生
+        // 既にtelのtelの値がある場合はreturn　※この処理がないとstore処理の際にtel1、tel2、tel3をinputしていないため、結合処理でNULLを参照しエラー発生
         if ($this->has('tel')) {
             return;
         }
         // tel1, tel2, tel3 を結合して tel フィールドを作る
-        $tel = ($this->tel1 ?? '') . ($this->tel2 ?? '') . ($this->tel3 ?? '');
+        $tel = ($this->tel1 ?? '').($this->tel2 ?? '').($this->tel3 ?? '');
 
-        //数字以外は除外する
+        // 数字以外は除外する
         $this->merge([
             'tel' => preg_replace('/[^0-9]/', '', $tel),
         ]);
-
 
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -56,10 +56,9 @@ class StoreContactRequest extends FormRequest
 
             // お問い合わせ送信（タグ）のバリデーションルールを追加
             'tag_ids' => 'nullable|array',
-            'tag_ids.*' => 'integer|exists:tags,id'
+            'tag_ids.*' => 'integer|exists:tags,id',
         ];
     }
-
 
     public function messages(): array
     {
@@ -75,6 +74,6 @@ class StoreContactRequest extends FormRequest
             'detail.required' => 'お問い合わせ内容を入力してください',
             'detail.max' => 'お問い合わせ内容は120文字以内で入力してください',
         ];
-        
+
     }
 }
