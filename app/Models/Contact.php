@@ -9,8 +9,7 @@ class Contact extends Model
 {
     use HasFactory;
 
-
-    //お問い合わせ情報（DR01）のfillableプロパティを定義
+    // お問い合わせ情報（DR01）のfillableプロパティを定義
     protected $fillable = [
         'first_name',
         'last_name',

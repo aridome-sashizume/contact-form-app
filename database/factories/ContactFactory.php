@@ -2,13 +2,12 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-
-use App\Models\Contact; //Contactモデルを使用するために追加
-use App\Models\Category; //Categoryモデルを使用するために追加
+use App\Models\Category;
+use App\Models\Contact; // Contactモデルを使用するために追加
+use Illuminate\Database\Eloquent\Factories\Factory; // Categoryモデルを使用するために追加
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Contact>
+ * @extends Factory<Contact>
  */
 class ContactFactory extends Factory
 {
@@ -23,7 +22,7 @@ class ContactFactory extends Factory
             // Fakerを使用してダミーデータを生成
             'first_name' => $this->faker->firstName(), // 名前を生成
             'last_name' => $this->faker->lastName(), // 苗字を生成
-            'gender' => $this->faker->randomElement([1, 2,3]), // 1:男性、2:女性、3:その他
+            'gender' => $this->faker->randomElement([1, 2, 3]), // 1:男性、2:女性、3:その他
             'email' => $this->faker->unique()->safeEmail(), // ユニークなメールアドレスを生成
             'tel' => $this->faker->numerify(
                 $this->faker->randomElement(['##########', '###########'])

@@ -2,12 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-
-use App\Models\User; //Userモデルを使用するために追加
-
-use Illuminate\Support\Facades\Hash; //Hashファサードを使用するために追加
+use App\Models\User;
+use Illuminate\Database\Seeder; // Userモデルを使用するために追加
+use Illuminate\Support\Facades\Hash; // Hashファサードを使用するために追加
 
 class UserSeeder extends Seeder
 {

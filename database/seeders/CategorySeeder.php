@@ -2,11 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-
-use App\Models\Category; //Catagoryモデルを使用するために追加
-
+use App\Models\Category;
+use Illuminate\Database\Seeder; // Catagoryモデルを使用するために追加
 
 class CategorySeeder extends Seeder
 {

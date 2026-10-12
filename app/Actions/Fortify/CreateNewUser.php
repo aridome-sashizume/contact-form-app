@@ -33,16 +33,16 @@ class CreateNewUser implements CreatesNewUsers
             ],
             'password' => $this->passwordRules(),
         ],
-        //バリデーションメッセージの追加
-        [
-            'name.required'=> 'お名前を入力してください',
-            'email.required'=>'メールアドレスを入力してください',
-            'email.email'=>'メールアドレスはメール形式で入力してください',
-            'password.required'=>'パスワードを入力してください',
-            'password.min'=>'パスワードは8文字以上で入力してください',
-            'password.confirmed' => 'パスワードと一致しません',
-        ], [
-        ]
+            // バリデーションメッセージの追加
+            [
+                'name.required' => 'お名前を入力してください',
+                'email.required' => 'メールアドレスを入力してください',
+                'email.email' => 'メールアドレスはメール形式で入力してください',
+                'password.required' => 'パスワードを入力してください',
+                'password.min' => 'パスワードは8文字以上で入力してください',
+                'password.confirmed' => 'パスワードと一致しません',
+            ], [
+            ]
         )->validate();
 
         return User::create([
