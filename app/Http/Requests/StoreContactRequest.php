@@ -51,7 +51,7 @@ class StoreContactRequest extends FormRequest
             'tel' => 'required|string|regex:/^[0-9]{10,11}$/',
             'address' => 'required|string|max:255',
             'building' => 'nullable|string|max:255',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => 'required|integer|exists:categories,id',
             'detail' => 'required|string|max:120',
 
             // お問い合わせ送信（タグ）のバリデーションルールを追加
@@ -70,7 +70,6 @@ class StoreContactRequest extends FormRequest
             'email.required' => 'メールアドレスを入力してください',
             'email.email' => 'メールアドレスはメール形式で入力してください',
             'tel.required' => '電話番号を入力してください',
-            'tel.regex'=>'電話番号を入力してください',
             'address.required' => '住所を入力してください',
             'category_id.required' => 'お問い合わせの種類を選択してください',
             'detail.required' => 'お問い合わせ内容を入力してください',
