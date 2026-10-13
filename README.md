@@ -50,7 +50,7 @@ erDiagram
 ## 環境構築手順
 
 ### 1. Laravel プロジェクト作成
-```
+```bash
 docker run --rm \
     -u "$(id -u):$(id -g)" \
     -v "$(pwd):/var/www/html" \
@@ -61,7 +61,7 @@ docker run --rm \
 ```
 
 ### 2. Sail インストール
-```
+```bash
 cd contact-form-app
 docker run --rm \
     -u "$(id -u):$(id -g)" \
@@ -93,7 +93,7 @@ DB_PASSWORD=password
 
 ### 4. フロントエンドのセットアップ (Vite & Tailwind CSS)
 ※重要: sail npm install を実行する前に、必ずSailコンテナが起動していることを確認してください。
-```
+```bash
 sail npm install
 sail npm install -D tailwindcss@^3.4.0 postcss autoprefixer
 sail npm install alpinejs
@@ -118,7 +118,7 @@ export default {
 
 ### 5. 提供Bladeに変更
 プロジェクト内の`resources`フォルダを削除し、クローンした`resources`をコピー
-```
+```bash
 git clone https://github.com/coachtech-prepared-file/Preparedblade-ConfirmationTest-ContactForm.git
 ```
 
@@ -145,7 +145,7 @@ compose.yaml に追加する内容
 ```
 
 ### 8. アプリケーションキーの生成
-```
+```bash
 sail artisan key:generate
 ```
 
