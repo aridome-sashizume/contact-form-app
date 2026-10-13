@@ -8,7 +8,8 @@ use Illuminate\Foundation\Http\FormRequest;
 class UpdateContactRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * 公開APIの更新リクエストは常に許可
+     * （PUT /api/v1/contacts/{contact} は認証不要のため true）
      */
     public function authorize(): bool
     {
@@ -16,30 +17,52 @@ class UpdateContactRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * お問い合わせ更新API（PG10）のバリデーションルール
+     * 仕様書の「お問い合わせフォーム入力ページ」のルールをそのまま適用し、公開API用にタグ(tag_ids)の存在チェックも追加している。
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            // お問い合わせフォーム確認・送信のバリデーションルールを定義
+            // 姓（必須・文字列・255文字以内）
             'first_name' => 'required|string|max:255',
+
+            // 名（必須・文字列・255文字以内）
             'last_name' => 'required|string|max:255',
-            'gender' => 'required|in:1,2,3',
+
+            // 性別（必須・1,2,3 のいずれか）
+            'gender' => 'required|integer|in:1,2,3',
+
+            // メールアドレス（必須・メール形式）
             'email' => 'required|email|max:255',
+
+            // 電話番号（必須・ハイフンなし10〜11桁）
             'tel' => 'required|string|regex:/^[0-9]{10,11}$/',
+
+            // 住所（必須）
             'address' => 'required|string|max:255',
+
+            // 建物名（任意）
             'building' => 'nullable|string|max:255',
+
+            // カテゴリ（必須・存在チェック）
             'category_id' => 'required|integer|exists:categories,id',
+
+            // お問い合わせ内容（必須・120文字以内）
             'detail' => 'required|string|max:120',
 
-            // お問い合わせ送信（タグ）のバリデーションルールを追加
+            // タグ（任意・配列）
             'tag_ids' => 'nullable|array',
+
+            // タグの各要素が整数かつ tags テーブルに存在するかチェック
             'tag_ids.*' => 'integer|exists:tags,id',
         ];
     }
 
+    /**
+     * 仕様書で明記されている日本語エラーメッセージ
+     */
     public function messages(): array
     {
         return [
@@ -53,7 +76,7 @@ class UpdateContactRequest extends FormRequest
             'category_id.required' => 'お問い合わせの種類を選択してください',
             'detail.required' => 'お問い合わせ内容を入力してください',
             'detail.max' => 'お問い合わせ内容は120文字以内で入力してください',
-
+            // 公式APIでの追加メッセージ
             'tel.regex' => '電話番号はハイフンなしの10〜11桁で入力してください',
             'gender.in' => '性別の値が不正です',
             'category_id.exists' => '選択されたカテゴリーが存在しません',
