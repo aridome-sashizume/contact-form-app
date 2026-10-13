@@ -9,14 +9,19 @@ class Category extends Model
 {
     use HasFactory;
 
-    //  カテゴリ情報（DR02）のfillableプロパティを定義
+    /**
+     * カテゴリ情報の登録・更新で利用する属性を指定。
+     * content のみを一括代入可能にすることで、不要なフィールドの代入を防ぎ、安全にカテゴリを作成できるようにしている。
+     */
     protected $fillable = [
         'content',
     ];
 
-    /*
-     *　お問い合わせ情報（DR01）１対多のリレーション
-    */
+    /**
+     * 問い合わせ情報（DR01）との 1 対多のリレーション。
+     * 1つのカテゴリに複数のお問い合わせが紐づくため、
+     * Category → Contact の hasMany を定義している。
+     */
     public function contacts()
     {
         return $this->hasMany(Contact::class);

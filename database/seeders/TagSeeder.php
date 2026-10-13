@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-
-use App\Models\Tag; //Tagモデルを使用するために追加
+use App\Models\Tag;
+use Illuminate\Database\Seeder; // Tagモデルを使用するために追加
 
 class TagSeeder extends Seeder
 {
@@ -14,7 +12,7 @@ class TagSeeder extends Seeder
      */
     public function run(): void
     {
-        //tag情報の初期データを作成
+        // tag情報の初期データを作成
         Tag::create(['name' => '質問']);
         Tag::create(['name' => '要望']);
         Tag::create(['name' => '不具合報告']);

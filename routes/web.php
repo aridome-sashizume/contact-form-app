@@ -1,11 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\AdminController; // AdminControllerをインポート
-
-use App\Http\Controllers\ContactController; // ContactControllerをインポート
-use App\Http\Controllers\TagController; //TagControllerをインポート
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ContactController; // AdminControllerをインポート
+use App\Http\Controllers\TagController; // ContactControllerをインポート
+use Illuminate\Support\Facades\Route; // TagControllerをインポート
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +28,6 @@ Route::post('/contacts/confirm', [ContactController::class, 'confirm']); // 確�
 Route::post('/contacts', [ContactController::class, 'store']); // お問い合わせ保存
 Route::get('/thanks', [ContactController::class, 'thanks']);    // サンクスページ
 
-
 /**********************************/
 /* Fortifyの認証ルート
 /**********************************/
@@ -38,14 +35,13 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-
 /**********************************/
 /* 認証が必要な管理画面ルート
 /**********************************/
 Route::middleware(['auth'])->group(function () {
 
     /**********************************/
-    /* Site:お問い合わせ管理ページ（PG05）
+    /* Site:お問い合わせ管理ページ
     /**********************************/
     Route::get('/admin', [AdminController::class, 'index']); // 一覧
     Route::get('/admin/contacts/{contact}', [AdminController::class, 'show']); // 詳細

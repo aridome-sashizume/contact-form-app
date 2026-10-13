@@ -1,5 +1,6 @@
 <?php
-use App\Providers\RouteServiceProvider;  //RouteServiceProviderを使用するために追加
+
+use App\Providers\RouteServiceProvider;  // RouteServiceProviderを使用するために追加
 use Laravel\Fortify\Features;
 
 return [
@@ -73,7 +74,7 @@ return [
     |
     */
 
-     'home' => RouteServiceProvider::HOME,  // ← '/home' から変更
+    'home' => RouteServiceProvider::HOME,  // ← '/home' から変更
 
     /*
     |--------------------------------------------------------------------------

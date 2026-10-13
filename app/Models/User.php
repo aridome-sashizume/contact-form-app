@@ -13,7 +13,8 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * ユーザー登録・更新時に一括代入を許可する属性。
+     * name / email / password のみを許可することで、不正なフィールドの代入を防ぎ安全にユーザー情報を扱う。
      *
      * @var array<int, string>
      */
@@ -24,7 +25,8 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * JSON などへシリアライズする際に非表示にする属性。
+     * password や remember_token を隠すことで、セキュリティ上の情報漏洩を防止する。
      *
      * @var array<int, string>
      */
@@ -34,7 +36,8 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * モデル属性の型変換設定。
+     * email_verified_at は日時として扱い、password は自動的にハッシュ化して保存する。
      *
      * @var array<string, string>
      */
