@@ -8,34 +8,36 @@ use App\Models\Tag; // Tagモデルを追加
 
 class TagController extends Controller
 {
-    // タグを追加するメソッドを作成
+    // タグの新規登録処理（入力されたタグ名をバリデーション後にDBへ保存する）
     public function store(StoreTagRequest $request)
     {
         Tag::create($request->all());
 
-        // /adminへのリダイレクト
+        // 管理画面へ戻り、登録完了メッセージを表示
         return redirect('/admin')->with('success', 'タグを追加しました');
     }
 
-    // タグの編集ページへ遷移するメソッドを作成
+    // タグ編集画面の表示（選択されたタグの内容を編集フォームに表示する）
     public function edit(Tag $tag)
     {
         return view('admin.tags.edit', compact('tag'));
     }
 
-    // タグを更新するメソッドを作成
+    // タグの更新処理（バリデーション済みの入力値で既存タグを更新する）
     public function update(UpdateTagRequest $request, Tag $tag)
     {
         $tag->update($request->all());
 
+        // 管理画面へ戻り、更新完了メッセージを表示
         return redirect('/admin')->with('success', 'タグを更新しました');
     }
 
-    // タグを削除するメソッドを作成
+    // タグの削除処理（選択されたタグをDBから削除する）
     public function destroy(Tag $tag)
     {
         $tag->delete();
 
+        // 管理画面へ戻り、削除完了メッセージを表示
         return redirect('/admin')->with('success', 'タグを削除しました');
     }
 }

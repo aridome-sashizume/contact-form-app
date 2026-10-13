@@ -41,7 +41,7 @@ Route::get('/login', function () {
 Route::middleware(['auth'])->group(function () {
 
     /**********************************/
-    /* Site:お問い合わせ管理ページ（PG05）
+    /* Site:お問い合わせ管理ページ
     /**********************************/
     Route::get('/admin', [AdminController::class, 'index']); // 一覧
     Route::get('/admin/contacts/{contact}', [AdminController::class, 'show']); // 詳細

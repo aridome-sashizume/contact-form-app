@@ -9,10 +9,10 @@ use App\Models\Tag; // 検索条件のバリデーション設定したリクエ
 
 class AdminController extends Controller
 {
-    // indexメソッドを追加
+    // 管理画面の問い合わせ一覧を表示
     public function index(IndexContactRequest $request)
     {
-        // N+1回避
+        // タグとカテゴリのクエリを作成（N+1回避）
         $query = Contact::query()->with(['tags', 'category']);
 
         // 名前 or メールアドレス（部分一致 / 完全一致）
@@ -20,10 +20,8 @@ class AdminController extends Controller
             $keyword = $request->keyword;
 
             $query->where(function ($q) use ($keyword) {
-                // 名前（first_name + last_name の部分一致）
-                $q->whereRaw('CONCAT(first_name, last_name) LIKE ?', ["%{$keyword}%"])
-                // メール（完全一致・部分一致）
-                    ->orWhere('email', 'like', '%'.$keyword.'%');
+                $q->where('first_name', 'like', "%{$keyword}%")
+                    ->orWhere('last_name', 'like', "%{$keyword}%");
             });
         }
 
@@ -44,8 +42,6 @@ class AdminController extends Controller
 
         // ページネーション1ページあたり7件取得 + 検索条件保持
         $contacts = $query->paginate(7)->appends($request->query());
-
-        // タグの取得
 
         // admin.indexビューにcontactsとcategories、tagsを渡す
         return view('admin.index', [

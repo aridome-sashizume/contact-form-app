@@ -10,7 +10,7 @@ use App\Models\Tag; // CSVを出力する際の条件データのバリデーシ
 
 class ContactController extends Controller
 {
-    // indexメソッドを追加
+    // 問い合わせフォームの初期画面（ユーザーが選択できるカテゴリ・タグ一覧を表示）
     public function index()
     {
         // 全てのカテゴリを取得
@@ -23,7 +23,7 @@ class ContactController extends Controller
         return view('contact.index', compact('categories', 'tags'));
     }
 
-    // confirmメソッドを追加
+    // 入力内容の確認画面（バリデーション済みデータを表示）
     public function confirm(StoreContactRequest $request)
     {
         // バリデーションを実行
@@ -36,7 +36,7 @@ class ContactController extends Controller
         return view('contact.confirm', compact('validated', 'category'));
     }
 
-    // storeメソッドを追加
+    // 問い合わせ内容の保存処理（DB登録＋タグ紐付け）
     public function store(StoreContactRequest $request)
     {
         // バリデーションを実行
@@ -52,11 +52,13 @@ class ContactController extends Controller
         return redirect('/thanks');
     }
 
+    // 問い合わせ送信完了画面
     public function thanks()
     {
         return view('contact.thanks');
     }
 
+    // 問い合わせ一覧を条件付きで取得し、CSVとして出力
     public function export(ExportContactRequest $request)
     {
         // N+1回避、新着順で取得するように設定
@@ -68,9 +70,10 @@ class ContactController extends Controller
 
             $query->where(function ($q) use ($keyword) {
                 // 名前（first_name + last_name の部分一致）
-                $q->whereRaw('CONCAT(first_name, last_name) LIKE ?', ["%{$keyword}%"])
-                // メール（完全一致・部分一致）
-                    ->orWhere('email', 'like', '%'.$keyword.'%');
+                $q->where('first_name', 'like', "%{$keyword}%")
+                    ->orWhere('last_name', 'like', "%{$keyword}%")
+                 // メール（完全一致・部分一致）
+                    ->orWhere('email', 'like', "%{$keyword}%");
             });
         }
 
@@ -122,6 +125,7 @@ class ContactController extends Controller
             'Content-Disposition' => "attachment; filename={$filename}",
         ];
 
+        // CSVをストリーム出力
         $callback = function () use ($csvData) {
             $file = fopen('php://output', 'w');
 
