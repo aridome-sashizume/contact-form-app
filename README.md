@@ -226,7 +226,7 @@ sail artisan migrate --seed
 
 ---
 
-### 🗑 5. お問い合わせ削除
+### 5. お問い合わせ削除
 **DELETE /api/v1/contacts/{contact}**
 
 **レスポンス**  
