@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class IndexContactRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * 公開APIの検索リクエストは常に許可
      */
     public function authorize(): bool
     {
@@ -16,23 +16,34 @@ class IndexContactRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * 公開APIの検索条件バリデーション
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            //
+            // キーワード検索（部分一致用）
             'keyword' => 'nullable|string|max:255',
-            'gendar' => 'nullable|integer| in:1,2,3',
+
+            // 性別（1,2,3 のいずれか）
+            'gender' => 'nullable|integer| in:1,2,3',
+
+            // カテゴリID（存在チェック）
             'category_id' => 'nullable|integer|exists:categories,id',
+
+            // 日付検索（created_at の日付一致）
             'date' => 'nullable|date',
+
+            // ページネーション（任意）
             'per_page' => 'nullable|integer|min:1|max:100',
             'page' => 'nullable|integer|min:1',
         ];
     }
 
+    /**
+     * 仕様書で明記されている日本語エラーメッセージ
+     */
     public function messages(): array
     {
         return [

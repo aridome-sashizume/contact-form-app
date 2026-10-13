@@ -6,20 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\IndexContactRequest;
 use App\Http\Requests\Api\V1\StoreContactRequest;
 use App\Http\Requests\Api\V1\UpdateContactRequest;
-use App\Http\Resources\ContactResource; // Contactモデルを使用するために追加
+use App\Http\Resources\ContactResource; // APIレスポンス整形用リソース
 use App\Models\Contact;
 
 class ContactController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * お問い合わせ一覧を取得（検索 + ページネーション）
+     * GET /api/v1/contacts
      */
     public function index(IndexContactRequest $request)
     {
         // バリデーション済みの検索条件を取得
         $validated = $request->validated();
 
-        // N+1回避
+        // N+1問題回避のため、tags・category を事前ロード
         $query = Contact::query()->with(['tags', 'category']);
 
         // 名前 or メールアドレス（部分一致 / 完全一致）
@@ -28,9 +29,10 @@ class ContactController extends Controller
 
             $query->where(function ($q) use ($keyword) {
                 // 名前（first_name + last_name の部分一致）
-                $q->whereRaw('CONCAT(first_name, last_name) LIKE ?', ["%{$keyword}%"])
-                // メール（完全一致・部分一致）
-                    ->orWhere('email', 'like', '%'.$keyword.'%');
+                $q->where('first_name', 'like', "%{$keyword}%")
+                    ->orWhere('last_name', 'like', "%{$keyword}%")
+                 // メール（完全一致・部分一致）
+                    ->orWhere('email', 'like', "%{$keyword}%");
             });
         }
 
@@ -51,8 +53,9 @@ class ContactController extends Controller
 
         // ページネーションを設定（デフォルト20）
         $perPage = $validated['per_page'] ?? 20;
-        $contacts = $query->orderBy('id', 'desc')->paginate($perPage);
+        $contacts = $query->orderBy('created_at', 'desc')->paginate($perPage);
 
+        // ContactResource で整形し、meta情報を追加
         return ContactResource::collection($contacts)
             ->additional([
                 'meta' => [
@@ -65,27 +68,30 @@ class ContactController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * お問い合わせ詳細を取得
+     * GET /api/v1/contacts/{contact}
      */
     public function show(Contact $contact)
     {
         // category・tagsをネスト化するためにロード
         $contact->load(['category', 'tags']);
 
+        // ContactResource で整形して返却
         return (new ContactResource($contact))
             ->response()
             ->setStatusCode(200);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * お問い合わせを新規作成
+     * POST /api/v1/contacts
      */
     public function store(StoreContactRequest $request)
     {
         // バリデーション済みのデータを取得
         $validated = $request->validated();
 
-        // バリデーション済みデータ（必須項目）からお問い合わせ作成
+        // バリデーション済みデータからお問い合わせ本体を作成
         $contact = Contact::create([
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
@@ -93,7 +99,7 @@ class ContactController extends Controller
             'email' => $validated['email'],
             'tel' => $validated['tel'],
             'address' => $validated['address'],
-            'building' => $validated['building'],
+            'building' => $validated['building'] ?? null,
             'category_id' => $validated['category_id'],
             'detail' => $validated['detail'],
         ]);
@@ -113,7 +119,8 @@ class ContactController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * お問い合わせを更新
+     * PUT /api/v1/contacts/{contact}
      */
     public function update(UpdateContactRequest $request, Contact $contact)
     {
@@ -128,7 +135,7 @@ class ContactController extends Controller
             'email' => $validated['email'],
             'tel' => $validated['tel'],
             'address' => $validated['address'],
-            'building' => $validated['building'],
+            'building' => $validated['building'] ?? null,
             'category_id' => $validated['category_id'],
             'detail' => $validated['detail'],
         ]);
@@ -144,14 +151,15 @@ class ContactController extends Controller
         // category・tagsをロード
         $contact->load(['category', 'tags']);
 
-        // contactをContactResourceでラップしたデータを編訳
+        // contactをContactResourceでラップしたデータを返却
         return (new ContactResource($contact))
             ->response()
             ->setStatusCode(200);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * お問い合わせを削除
+     * DELETE /api/v1/contacts/{contact}
      */
     public function destroy(Contact $contact)
     {
