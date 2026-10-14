@@ -58,9 +58,15 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            // ★ PHP 8.5 / testing環境で null をキーにしない安全版
+            'options' => extension_loaded('pdo_mysql')
+                ? (env('APP_ENV') !== 'testing'
+                    ? array_filter([
+                        PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                    ])
+                    : [] // ★ testing環境では空にする
+                )
+                : [],
         ],
 
         'pgsql' => [
