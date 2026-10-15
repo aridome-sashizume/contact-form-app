@@ -117,27 +117,28 @@ class ContactController extends Controller
             ];
         }
 
-        // CSVデータを出力
-        $filename = 'contacts_export_'.now()->format('Ymd_His').'.csv';
+     // ファイル名
+        $filename = 'contacts_export_' . now()->format('Ymd_His') . '.csv';
 
+        // ヘッダー（仕様書通り）
         $headers = [
-            'Content-Type' => 'text/csv',
+            'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => "attachment; filename={$filename}",
         ];
 
-        // CSVをストリーム出力
-        $callback = function () use ($csvData) {
+        // ★ streamDownload は使わない（テストで BOM が取れないため）
+        return response()->stream(function () use ($csvData) {
             $file = fopen('php://output', 'w');
 
-            // UTF-8 BOM を追加
+            // BOM付で出力（テストで検出可能）
             fwrite($file, "\xEF\xBB\xBF");
 
             foreach ($csvData as $row) {
                 fputcsv($file, $row);
             }
-            fclose($file);
-        };
 
-        return response()->stream($callback, 200, $headers);
+            fclose($file);
+        }, 200, $headers);
+
     }
 }
