@@ -117,8 +117,8 @@ class ContactController extends Controller
             ];
         }
 
-     // ファイル名
-        $filename = 'contacts_export_' . now()->format('Ymd_His') . '.csv';
+        // ファイル名
+        $filename = 'contacts_export_'.now()->format('Ymd_His').'.csv';
 
         // ヘッダー（仕様書通り）
         $headers = [
