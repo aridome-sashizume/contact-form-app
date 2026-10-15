@@ -1,8 +1,45 @@
 # COACHTECH お問い合わせフォーム
 
+## 目次
+1. [概要](#概要)
+2. [アーキテクチャ](#アーキテクチャ)
+3. [ER図](#er図)
+4. [環境構築手順（開発用）](#環境構築手順)
+5. [使用技術](#使用技術)
+6. [APIエンドポイント一覧](#apiエンドポイント一覧)
+7. [アプリ実行手順（採点者向け）](#環境構築手順-1)
+8. [アクセスURL](#アクセス-url)
+9. [テスト状況](#テスト状況)
+10. [ディレクトリ構成](#ディレクトリ構成実装部分のみ抜粋)
+11. [開発環境URL](#開発環境url)
+12. [作成者](#作成者)
+
+
 ## 概要
 Laravel 10 / MySQL / Docker / Sail を使用したお問い合わせフォームアプリケーションです。
 一般ユーザー向けの問い合わせ送信機能と、管理者向けの問い合わせ管理機能を実装します。
+また、応用機能として問い合わせ内容のCSVエクスポートと公開API（CRUD）を実装しています。
+
+---
+
+## アーキテクチャ
+アーキテクチャはWeb版と公開APIそれぞれ実装しています。
+
+### Webブラウザ向け機能（Traditional Web / SSR）
+- Bladeテンプレート
+- Fortifyによるセッション認証（Cookie）
+- ルーティング：`routes/web.php`
+- コントローラー：`App\Http\Controllers`配下
+- お問い合わせ入力→お問い合わせ確認→サンクスページの流れをSSRで実装
+
+### 公開API
+問い合わせデータを操作できる 公開API（CRUD） を実装
+- ルーティング：`routes/api.php`
+- コントローラー：`App\Http\Controllers\Api\V1` 配下
+- 認証不要（Sanctum は使用しません）
+- お問い合わせの一覧表示・詳細表示・登録・更新・削除が可能
+
+---
 
 ## ER図
 ```mermaid
@@ -47,7 +84,11 @@ erDiagram
   tags ||--o{ contact_tag : "pivot"
 ```
 
+---
+
 ## 環境構築手順
+※本課題における開発における環境構築手順をまとめる。
+なお、以下を基に作成したWebアプリケーション・公開APIの実行手順は*アプリ実行手順"に記載します。
 
 ### 1. Laravel プロジェクト作成
 ```bash
@@ -155,6 +196,8 @@ sail artisan key:generate
 sail artisan migrate --seed
 ```
 
+---
+
 ## 使用技術
 - Laravel 10.x
 - PHP 8.2
@@ -162,9 +205,11 @@ sail artisan migrate --seed
 - Docker / Laravel Sail
 - Nginx
 - Tailwind CSS 3.4
+- Vite
+
+---
 
 ## APIエンドポイント一覧
----
 
 ### 1. お問い合わせ一覧取得（検索 + ページネーション）
 **GET /api/v1/contacts**
@@ -178,11 +223,11 @@ sail artisan migrate --seed
 | page | int | 任意 | ページ番号 |
 | per_page | int | 任意 | 1〜100 |
 
+
 **レスポンス（概要）**  
 - `data`: ContactResource の配列  
 - `meta`: current_page / last_page / per_page / total  
 
----
 
 ### 2. お問い合わせ詳細取得
 **GET /api/v1/contacts/{contact}**
@@ -190,7 +235,6 @@ sail artisan migrate --seed
 - ContactResource を返却  
 - category / tags をネストして返す  
 
----
 
 ### 3. お問い合わせ作成
 **POST /api/v1/contacts**
@@ -212,7 +256,6 @@ sail artisan migrate --seed
 - ContactResource  
 - **201 Created**
 
----
 
 ### 4. お問い合わせ更新
 **PUT /api/v1/contacts/{contact}**
@@ -224,13 +267,165 @@ sail artisan migrate --seed
 - ContactResource  
 - **200 OK**
 
----
 
 ### 5. お問い合わせ削除
 **DELETE /api/v1/contacts/{contact}**
 
 **レスポンス**  
 - **204 No Content**
+
+---
+
+## 環境構築手順
+このアプリケーションは Docker / Laravel Sail を使用して動作します。
+ホストマシンに PHP や Composer をインストールする必要はありません。
+
+ただし、初回のみ Sail を使うための vendor を生成する必要があるため、Composer を Docker コンテナ経由で実行します。  
+（ホストに Composer をインストールする必要はありません）
+
+### 1.リポジトリのクローン
+
+```bash
+git clone git@github.com:aridome-sashizume/contact-form-app.git
+cd contact-form-app
+```
+### 2.Composer インストール
+`.env.example` は Sail 用の DB 設定済み です。
+
+```bash
+cp .env.example .env
+```
+
+### 3. Composer install（ホストに Composer 不要）
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php82-composer:latest \
+    composer install
+```
+
+### 4. Sail の起動
+```bash
+./vendor/bin/sail up -d
+```
+
+### 5.フロントエンドのセットアップ（Tailwind CSS を含む）
+Tailwind CSS はすでにプロジェクトに含まれています。
+```bash
+./vendor/bin/sail npm install
+./vendor/bin/sail npm run build
+```
+※ 開発用の npm run dev は不要です。
+
+### 6. アプリケーションキー生成
+```bash
+./vendor/bin/sail artisan key:generate
+```
+
+### 7.データベース初期化
+```bash
+./vendor/bin/sail artisan migrate:fresh --seed
+```
+
+## アクセス URL
+- フロント画面
+　http://localhost/
+
+- 管理画面
+　http://localhost/admin
+　※管理画面ログイン情報（初期データ）
+```
+メール: admin@example.com
+パスワード: password
+```
+## テスト実行
+```bash
+./vendor/bin/sail artisan test
+```
+---
+
+## テスト状況
+- Unitテスト（FormRequest）：全完了
+- Featureテスト（API）：全完了
+- Fortify：ログイン・登録のみ使用（Reset/UpdatePassword/Profileは対象外）
+- coverage：88%（Laravel内部機能は未使用のため対象外）
+---
+
+## ディレクトリ構成（実装部分のみ抜粋）
+```
+app/
+├── Actions/
+│   └── Fortify
+│       └── CreateNewUser.php
+├── Http/
+│   ├── Controllers/
+│   │   ├── ContactController.php
+│   │   ├── AdminController.php
+│   │   ├── TagController.php
+│   │   └─ Api/V1
+│   │        └── ContactController.php
+│   ├── Requests/
+│   │   ├── StoreContactRequest.php
+│   │   ├── UpdateContactRequest.php
+│   │   ├── IndexContactRequest.php
+│   │   ├── StoreTagRequest.php
+│   │   ├── UpdateTagRequest.php
+│   │   ├── ExportContactRequest.php
+│   │   └── Api/V1
+│   │        ├── IndexContactRequest.php
+│   │        ├── StoreContactRequest.php
+│   │        └── UpdateContactRequest.php
+│   └── Resources/
+│       ├── CategoryResource.php
+│       ├── ContactResource.php
+│       └── TagResource.php
+├── Models/
+│   ├── Contact.php
+│   ├── Category.php
+│   ├── Tag.php
+│   └── User.php
+├── Providers/
+│   ├── FortifyServiceProvider.php
+│   └── RouteServiceProvider.php
+├── routes/
+│   ├── web.php
+│   └── api.php
+├── resources/
+│         ├── views/
+│             └── contact/
+│                 ├── _form.blade.php
+│                 ├── confirm.blade.php
+│                 ├── index.blade.php
+│                 └── thanks.blade.php 
+tests/
+├── Feature/
+│   ├── Api/V1/
+│   │   ├── DeleteContactFeatureTest.php
+│   │   ├── IndexContactFeatureTest.php
+│   │   ├── ShowContactFeatureTest.php
+│   │   ├── StoreContactFeatureTest.php
+│   │   └── UpdateContactFeatureTest.php
+│   ├── AdminFeatureTest.php
+│   ├── AuthFeatureTest.php
+│   ├── ContactFeatureTest.php
+│   ├── CsvExportContactTest.php
+│   └── TagFeatureTest.php
+└── Unit/
+│   ├── Api/V1/
+│   |    ├── IndexContactRequestTest.php
+│   |    ├── StoreContactRequestTest.php
+│   |    └── UpdateContactRequestTest.php
+│   ├── CategoryTest.php
+│   ├── ContactTest.php
+│   ├── ExportContactRequestTest.php
+│   ├── IndexContactRequestTest.php
+│   ├── TagTest.php
+|   └── UpdateTagRequestTest.php
+├── CreatesApplication.php
+└── TestCase.php
+```
 
 ---
 
