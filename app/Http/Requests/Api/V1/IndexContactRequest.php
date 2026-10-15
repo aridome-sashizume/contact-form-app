@@ -33,7 +33,7 @@ class IndexContactRequest extends FormRequest
             'category_id' => 'nullable|integer|exists:categories,id',
 
             // 日付検索（created_at の日付一致）
-            'date' => 'nullable|date',
+            'date' => 'nullable|date_format:Y-m-d',
 
             // ページネーション（任意）
             'per_page' => 'nullable|integer|min:1|max:100',
