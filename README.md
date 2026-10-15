@@ -8,11 +8,10 @@
 5. [開発環境URL](#開発環境url)
 6. [使用技術](#使用技術)
 7. [APIエンドポイント一覧](#apiエンドポイント一覧)
-8. [アプリ実行手順](#環境構築手順-1)
-9. [アクセスURL](#アクセス-url)
-10. [テスト状況](#テスト状況)
-11. [ディレクトリ構成](#ディレクトリ構成実装部分のみ抜粋)
-13. [作成者](#作成者)
+8. [アプリ実行手順](#アプリ実行手順)
+9. [テスト状況](#テスト状況)
+10. [ディレクトリ構成](#ディレクトリ構成実装部分のみ抜粋)
+11. [作成者](#作成者)
 
 
 ## 概要
@@ -280,13 +279,16 @@ sail artisan migrate --seed
 
 ---
 
-## 環境構築手順
+## アプリ実行手順
 このアプリケーションは Docker / Laravel Sail を使用して動作します。
 ホストマシンに PHP や Composer をインストールする必要はありません。
 
-ただし、初回のみ Sail を使うための vendor を生成する必要があるため、Composer を Docker コンテナ経由で実行します。  
+ただし、初回のみvendor を生成する必要があるため、Composer を Docker コンテナ経由で実行します。  
 （ホストに Composer をインストールする必要はありません）
-
+※1～7に初回のみ実行、一度設定後は`contact-form-app`で以下を実行することで実行可能
+```bash
+./vendor/bin/sail up -d
+```
 ### 1.リポジトリのクローン
 
 ```bash
@@ -322,6 +324,10 @@ Tailwind CSS はすでにプロジェクトに含まれています。
 ./vendor/bin/sail npm run build
 ```
 ※ 開発用の npm run dev は不要です。
+　また、以下のようなエラーが出た場合は`./vendor/bin/sail down`で一度終了し、再度`./vendor/bin/sail up -d`で再起動すると解決する可能性が高いです。
+```
+OCI runtime exec failed: exec failed: unable to start container process: current working directory is outside of container mount namespace root -- possible container breakout detected
+```
 
 ### 6. アプリケーションキー生成
 ```bash
@@ -333,7 +339,7 @@ Tailwind CSS はすでにプロジェクトに含まれています。
 ./vendor/bin/sail artisan migrate:fresh --seed
 ```
 
-## アクセス URL
+### 8.アクセスURLを開く
 - フロント画面
 　http://localhost/
 
@@ -341,9 +347,17 @@ Tailwind CSS はすでにプロジェクトに含まれています。
 　http://localhost/admin
 　※管理画面ログイン情報（初期データ）
 ```
-メール: admin@example.com
+メール: test@example.com
 パスワード: password
 ```
+
+### 実行終了時は、以下のコマンドでSailを終了してください。
+```bash
+./vendor/bin/sail down
+```
+
+---
+
 ## テスト実行
 ```bash
 ./vendor/bin/sail artisan test
